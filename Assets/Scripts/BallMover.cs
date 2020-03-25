@@ -3,6 +3,7 @@ using Random = UnityEngine.Random;
 
 public class BallMover : MonoBehaviour
 {
+    public float initialXDirection;
     public float initialSpeed;
     public float increment;
     public float angleMultiplier;
@@ -41,9 +42,9 @@ public class BallMover : MonoBehaviour
             var angle = (transform.position - other.transform.position).normalized;
             var magnitude = _speed.magnitude;
             var newAngle = angle + _speed.normalized;
-            // _speed = new Vector3(-_speed.x, _speed.y, 
-            //     _speed.z + angle.z * angleMultiplier * Mathf.Abs(_speed.x)).normalized * (magnitude + increment);
-            _speed = newAngle * (magnitude + increment);
+            _speed = new Vector3(-_speed.x, _speed.y, 
+                _speed.z + angle.z * angleMultiplier * Mathf.Abs(_speed.x)).normalized * (magnitude + increment);
+            // _speed = newAngle * (magnitude + increment);
 
             audioSource.clip = bounceCarriageAudio;
             audioSource.Play();
@@ -65,10 +66,11 @@ public class BallMover : MonoBehaviour
 
     private Vector3 GetInitialSpeed()
     {
-        var xValue = Random.Range(-1f, 1f);
-        var zValue = Random.Range(-1f, 1f);
-        return new Vector3(xValue, 0, zValue).normalized * initialSpeed;
+        return new Vector3(initialXDirection, 0, Random.Range(-0.5f, 0.5f)).normalized * initialSpeed;
     }
 
-    public string Winner => _winner;
+    public string GetWinner()
+    {
+        return _winner;
+    }
 }

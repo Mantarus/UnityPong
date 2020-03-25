@@ -28,6 +28,7 @@ public class GameController : MonoBehaviour
     private BallMover _ballMover;
     private int _leftPlayerWins = 0;
     private int _rightPlayerWins = 0;
+    private string _previousWinner = "Right";
 
     // Start is called before the first frame update
     private void Start()
@@ -37,7 +38,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (_ballMover.Winner != null)
+        if (_ballMover.GetWinner() != null)
         {
             audioSource.clip = goalAudio;
             audioSource.Play();
@@ -61,6 +62,7 @@ public class GameController : MonoBehaviour
         _ballMover.initialSpeed = ballInitialSpeed;
         _ballMover.increment = ballSpeedIncrement;
         _ballMover.angleMultiplier = ballAngleMultiplier;
+        _ballMover.initialXDirection = _previousWinner == "Left" ? 1f: -1f;
         
         _leftPlayer = Instantiate(playerPrefab, new Vector3(-carriageXPosition, 1, 0), Quaternion.identity);
         _leftPlayer.GetComponent<CarriageAiMover>().enabled = false;
@@ -78,14 +80,15 @@ public class GameController : MonoBehaviour
     
     private void UpdateWins()
     {
-        if (_ballMover.Winner == "Left")
+        if (_ballMover.GetWinner() == "Left")
         {
             _leftPlayerWins++;
         }
-        if (_ballMover.Winner == "Right")
+        if (_ballMover.GetWinner() == "Right")
         {
             _rightPlayerWins++;
         }
+        _previousWinner = _ballMover.GetWinner();
     }
 
     private void UpdateScore()
