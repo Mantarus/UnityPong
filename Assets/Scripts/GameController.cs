@@ -10,6 +10,9 @@ public class GameController : MonoBehaviour
 
     public Text leftText;
     public Text rightText;
+    public Text middleText;
+    public Text topText;
+    public GameObject dimPlane;
 
     public AudioSource audioSource;
     public AudioClip goalAudio;
@@ -30,14 +33,18 @@ public class GameController : MonoBehaviour
     private int _rightPlayerWins = 0;
     private string _previousWinner = "Right";
 
+    private bool _paused = true;
+
     // Start is called before the first frame update
     private void Start()
     {
+        InitUi();
         StartGame();
     }
 
     private void Update()
     {
+        Pause();
         if (_ballMover.GetWinner() != null)
         {
             audioSource.clip = goalAudio;
@@ -102,5 +109,36 @@ public class GameController : MonoBehaviour
         Destroy(_leftPlayer.gameObject);
         Destroy(_rightPlayer.gameObject);
         Destroy(_ball.gameObject);
+    }
+
+    private void Pause()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            _paused = !_paused;
+            if (_paused)
+            {
+                Time.timeScale = 0;
+                middleText.text = "PAUSED";
+                Screen.brightness = 0.5f;
+                dimPlane.SetActive(true);
+            }
+            else
+            {
+                Time.timeScale = 1;
+                middleText.text = "";
+                Screen.brightness = 1f;
+                dimPlane.SetActive(false);
+            }
+        }
+    }
+
+    private void InitUi()
+    {
+        dimPlane.SetActive(false);
+        topText.text = "";
+        leftText.text = "0";
+        rightText.text = "0";
+        middleText.text = "";
     }
 }
