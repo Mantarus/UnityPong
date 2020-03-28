@@ -33,24 +33,25 @@ public class GameController : MonoBehaviour
     private int _rightPlayerWins = 0;
     private string _previousWinner = "Right";
 
-    private bool _paused = true;
-
-    // Start is called before the first frame update
-    private void Start()
-    {
-        InitUi();
-        StartGame();
-    }
+    private bool _gameStarted = false;
+    private bool _paused = false;
 
     private void Update()
     {
-        Pause();
-        if (_ballMover.GetWinner() != null)
+        if (_gameStarted)
         {
-            audioSource.clip = goalAudio;
-            audioSource.Play();
-            
-            NewRound();
+            Pause();
+            if (_ballMover.GetWinner() != null)
+            {
+                audioSource.clip = goalAudio;
+                audioSource.Play();
+
+                NewRound();
+            }
+        }
+        else
+        {
+            WaitUntilGameStarts();
         }
     }
 
@@ -83,6 +84,19 @@ public class GameController : MonoBehaviour
         rightPlayerMover.limit = carriageLimit;
         rightPlayerMover.speed = carriageSpeed;
         rightPlayerMover.ball = _ball;
+    }
+
+    private void WaitUntilGameStarts()
+    {
+        WelcomeScreen();
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            _gameStarted = true;
+            InitUi();
+            StartGame();
+            audioSource.clip = goalAudio;
+            audioSource.Play();
+        }
     }
     
     private void UpdateWins()
@@ -131,6 +145,15 @@ public class GameController : MonoBehaviour
                 dimPlane.SetActive(false);
             }
         }
+    }
+
+    private void WelcomeScreen()
+    {
+        dimPlane.SetActive(true);
+        topText.text = "PONG";
+        leftText.text = "";
+        rightText.text = "";
+        middleText.text = "Press ENTER to start";
     }
 
     private void InitUi()
