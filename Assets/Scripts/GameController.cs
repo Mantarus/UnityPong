@@ -40,7 +40,7 @@ public class GameController : MonoBehaviour
     {
         if (_gameStarted)
         {
-            Pause();
+            CheckPause();
             if (_ballMover.GetWinner() != null)
             {
                 audioSource.clip = goalAudio;
@@ -125,7 +125,7 @@ public class GameController : MonoBehaviour
         Destroy(_ball.gameObject);
     }
 
-    private void Pause()
+    private void CheckPause()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
